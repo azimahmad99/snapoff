@@ -1,0 +1,15 @@
+# internal — tidak dipublikasikan ke GitHub
+PROGRESS.md
+RINGKASAN.md
+ROADMAP.md
+CATATAN-TEKNIS.md
+
+# hasil build (dirilis lewat GitHub Releases, bukan lewat commit)
+Snapoff.exe
+Snapoff-e2e.exe
+*.res
+Snapoff-*.zip
+
+# milik mesin, jangan pernah ikut
+settings.ini
+Snapoff.cmd
