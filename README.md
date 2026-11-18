@@ -91,12 +91,24 @@ That vendor compiler is C# 5 — no string interpolation, no `?.`, no expression
 - Mixed-DPI correctness is proven *mechanically*, not on mixed hardware: process awareness reads back as per-monitor, `VirtualScreen` equals the union of monitor rectangles, a full capture matches the screen size, and a selected 1100×500 area produces a 1100×500 PNG. Two monitors at different scale factors have not been tested.
 - Clipboard retry (5 × 120 ms) is correct for transient contention; it was never verified under a permanently blocked clipboard, because that was the environment it was developed in.
 - Annotation thickness and toolbar height are physical pixels, so they look thinner/smaller at 125–150% display scaling (sharp, not scaled).
+- Autostart writes one `Snapoff.cmd` into your Startup folder. It points at the exe's current path and is rewritten on every launch, so moving the folder does not break it — but it has only been exercised against a redirected test folder, not a real Startup folder.
+- It is unsigned. SmartScreen may warn on the first run of a downloaded binary; building from source avoids that entirely.
+- There is no installer and no uninstaller. Extraction folder must be **writable** (Desktop, Documents, a USB stick) — inside `Program Files`, `settings.ini` cannot be written and preferences will not persist.
 - The "desktop locked" capture path is readable code and a visible message, not an automated test.
-- Version 0.9.0.0. There is no code signing, so SmartScreen may warn on first run of a downloaded binary. Building it yourself avoids that entirely.
+- Version 0.9.0.0 — pre-1.0 on purpose: the gates below are not all passed yet.
 
 ## License
 
 MIT — see [LICENSE](LICENSE).
+
+## Removing it
+
+There is no uninstaller because there is nothing installed. Delete the folder you extracted, then, if you used these:
+- the settings file: `settings.ini` next to `Snapoff.exe`
+- autostart: `Snapoff.cmd` in `%APPDATA%\Microsoft\Windows\Start Menu\Programs\Startup`
+- captures: the output folder shown in Settings (default `Pictures\snapoff`)
+
+Nothing else is left behind: no registry keys, no services, no cache directory.
 
 ---
 

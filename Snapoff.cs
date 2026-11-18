@@ -1448,8 +1448,13 @@ static partial class Program
         string p = Path.Combine(Settings.StartupDir, "Snapoff.cmd");
         try
         {
+            string isi = "@echo off\r\nstart \"\" \"" + Application.ExecutablePath + "\"\r\n";
             if (Settings.Autostart)
-                File.WriteAllText(p, "@echo off\r\nstart \"\" \"" + Application.ExecutablePath + "\"\r\n");
+            {
+                // Tulis hanya kalau berbeda: dipanggil juga saat start supaya folder yang dipindah
+                // (aplikasi portabel) tidak meninggalkan .cmd yang menunjuk path lama.
+                if (!File.Exists(p) || File.ReadAllText(p) != isi) File.WriteAllText(p, isi);
+            }
             else if (File.Exists(p)) File.Delete(p);
         }
         catch (Exception ex) { Fail("Autostart tidak bisa diubah (" + ex.Message + ")"); }
@@ -1503,6 +1508,9 @@ static partial class Program
         }
 #endif
         Settings.Load(Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "settings.ini"));
+        // Portabel: kalau autostart menyala tetapi exe sudah dipindah, .cmd lama menunjuk path mati.
+        // Menulis ulang di sini membuat autostart menyembuhkan diri tanpa pengguna membuka Pengaturan.
+        if (Settings.Autostart) ApplyAutostart();
 
         Application.EnableVisualStyles();
         Application.SetCompatibleTextRenderingDefault(false);

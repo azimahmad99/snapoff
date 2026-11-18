@@ -5,7 +5,7 @@ One page, reproducible. Every number below came from running the command shown, 
 Build audited: `Snapoff.exe`, 53,760 bytes. The hash below belongs to the exact binary inside `Snapoff-0.9.0.zip` on the release page — compilation is not reproducible, so rebuilding the same source produces a different hash:
 
 ```
-sha256  e0012c3fa962474f7fe1fd6f15b05fd82835d85881b9d082ea12a37bb6295f34   (0.9.0 release build)
+sha256  4489b4fb97848ad6c74a8b1b2cb0e0e2d5370f68be8ed74288ea20ac1dbe371c   (0.9.0 release build)
 ```
 
 What must reproduce is the behaviour, not the bytes. Rebuild from source, re-run the checks below, and compare the numbers — a mismatch means the audit page is wrong, and the source is the authority.

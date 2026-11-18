@@ -488,6 +488,23 @@ static partial class Program
         Console.WriteLine("autostart: cmd dibuat=" + cmdAda + ", dihapus saat dimatikan=" + cmdHapus + " -> " + cmd);
         if (!cmdAda || !cmdHapus) rc = 1;
 
+        // Aplikasi portabel: folder dipindah setelah autostart menyala = .cmd menunjuk path mati.
+        // Start berikutnya harus memperbaikinya sendiri, dan tidak menulis ulang kalau isinya sama.
+        Settings.StartupDirOverride = startupUji;
+        Settings.Autostart = true;
+        File.WriteAllText(cmd, "@echo off\r\nstart \"\" \"C:\\folder-lama\\Snapoff.exe\"\r\n");
+        ApplyAutostart();
+        bool perbaiki = File.ReadAllText(cmd).IndexOf(Application.ExecutablePath, StringComparison.OrdinalIgnoreCase) >= 0;
+        DateTime tulisAwal = File.GetLastWriteTimeUtc(cmd);
+        System.Threading.Thread.Sleep(25);
+        ApplyAutostart();
+        bool idempoten = File.GetLastWriteTimeUtc(cmd) == tulisAwal;
+        Settings.Autostart = false;
+        ApplyAutostart();
+        Settings.StartupDirOverride = null;
+        Console.WriteLine("autostart path usang diperbaiki=" + perbaiki + ", idempoten (tidak tulis ulang)=" + idempoten);
+        if (!perbaiki || !idempoten) rc = 1;
+
         // Bentrok hotkey harus terdeteksi: pendaftaran kedua untuk tombol yang sama wajib gagal.
         HotkeySink ha = new HotkeySink();
         HotkeySink hb = new HotkeySink();
