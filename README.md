@@ -120,4 +120,4 @@ Nothing else is left behind: no registry keys, no services, no cache directory.
 
 ---
 
-If you need ready-made web templates rather than desktop tools, that is what I do for a living: [github.com/azimahmad99](https://github.com/azimahmad99).
+**Web templates** — DM me: [github.com/azimahmad99](https://github.com/azimahmad99)
