@@ -1508,9 +1508,11 @@ static partial class Program
         }
 #endif
         Settings.Load(Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "settings.ini"));
-        // Portabel: kalau autostart menyala tetapi exe sudah dipindah, .cmd lama menunjuk path mati.
-        // Menulis ulang di sini membuat autostart menyembuhkan diri tanpa pengguna membuka Pengaturan.
-        if (Settings.Autostart) ApplyAutostart();
+        // Portabel: samakan folder Startup dengan pengaturan, DUA arah. Kalau hanya dipanggil saat
+        // autostart menyala, .cmd lama tertinggal ketika autostart dimatikan di luar dialog
+        // (settings.ini disalin dari mesin lain atau diedit tangan) — aplikasi lalu jalan saat login
+        // padahal pengaturannya bilang tidak.
+        ApplyAutostart();
 
         Application.EnableVisualStyles();
         Application.SetCompatibleTextRenderingDefault(false);

@@ -91,7 +91,7 @@ That vendor compiler is C# 5 — no string interpolation, no `?.`, no expression
 - Mixed-DPI correctness is proven *mechanically*, not on mixed hardware: process awareness reads back as per-monitor, `VirtualScreen` equals the union of monitor rectangles, a full capture matches the screen size, and a selected 1100×500 area produces a 1100×500 PNG. Two monitors at different scale factors have not been tested.
 - Clipboard retry (5 × 120 ms) is correct for transient contention; it was never verified under a permanently blocked clipboard, because that was the environment it was developed in.
 - Annotation thickness and toolbar height are physical pixels, so they look thinner/smaller at 125–150% display scaling (sharp, not scaled).
-- Autostart writes one `Snapoff.cmd` into your Startup folder. It points at the exe's current path and is rewritten on every launch, so moving the folder does not break it — but it has only been exercised against a redirected test folder, not a real Startup folder.
+- Autostart writes one `Snapoff.cmd` into your Startup folder, and it is reconciled in both directions on every launch: the path is rewritten when the exe moved, and the file is removed when autostart is off. Verified on Windows 11 against a real Startup folder (create, repair a stale path, run the `.cmd`, remove).
 - It is unsigned. SmartScreen may warn on the first run of a downloaded binary; building from source avoids that entirely.
 - There is no installer and no uninstaller. Extraction folder must be **writable** (Desktop, Documents, a USB stick) — inside `Program Files`, `settings.ini` cannot be written and preferences will not persist.
 - The "desktop locked" capture path is readable code and a visible message, not an automated test.
