@@ -15,7 +15,7 @@ if not errorlevel 1 (
 echo    ok: tidak ada ws2_32/wininet/winhttp/urlmon/dnsapi/mswsock/advapi32
 
 if exist "%ZIP%" del "%ZIP%"
-tar -a -c -f "%ZIP%" Snapoff.exe Snapoff.cs Snapoff-test.cs snapoff.rc app.ico build.cmd README.md LICENSE docs || exit /b 3
+tar -a -c -f "%ZIP%" Snapoff.exe Snapoff.cs Snapoff-test.cs snapoff.rc app.ico build.cmd README.md LICENSE docs/audit.md || exit /b 3
 
 echo == sha256 Snapoff.exe
 certutil -hashfile Snapoff.exe SHA256 | findstr /r /v "hash CertUtil"

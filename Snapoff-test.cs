@@ -136,6 +136,70 @@ static partial class Program
         return rc;
     }
 
+    // Mode demo (hanya build uji): membuka overlay nyata, MENGGERAKKAN seleksi dengan pesan mouse
+    // asli, lalu menggambar anotasi lewat jalur yang sama dengan pengguna. Tujuannya direkam jadi GIF;
+    // tidak ada assert di sini — angka kebenaran tetap milik --selftest.
+    static Timer _demo;
+    static int _dstep;
+    static readonly Point DemoFrom = new Point(200, 150), DemoTo = new Point(1300, 650);
+
+    static void StartDemo()
+    {
+        _demo = new Timer();
+        _demo.Interval = 200;
+        _demo.Tick += delegate { DemoStep(); };
+        _demo.Start();
+        Timer open = new Timer();
+        open.Interval = 900;
+        open.Tick += delegate { open.Stop(); open.Dispose(); Capture(); };
+        open.Start();
+    }
+
+    static IntPtr LP(int x, int y) { return (IntPtr)((y << 16) | (x & 0xFFFF)); }
+
+    static void DemoStep()
+    {
+        // Keluar SEBELUM memeriksa Current: CopyForTest menutup overlay, jadi Current == null
+        // sesudahnya dan pengecekan di bawah akan menghentikan urutan selamanya.
+        if (_dstep >= 20)
+        {
+            _demo.Stop();
+            _demo.Dispose();
+            Environment.Exit(0);
+        }
+        if (Current == null) return;
+        IntPtr h = Current.Handle;
+        int s = _dstep++;
+
+        if (s == 0)
+        {
+            SendMessage(h, 0x0201, (IntPtr)1, LP(DemoFrom.X, DemoFrom.Y)); // WM_LBUTTONDOWN
+            return;
+        }
+        if (s <= 8)
+        {
+            int x = DemoFrom.X + (DemoTo.X - DemoFrom.X) * s / 8;
+            int y = DemoFrom.Y + (DemoTo.Y - DemoFrom.Y) * s / 8;
+            SendMessage(h, 0x0200, IntPtr.Zero, LP(x, y)); // WM_MOUSEMOVE
+            return;
+        }
+        if (s == 9) { SendMessage(h, 0x0202, IntPtr.Zero, LP(DemoTo.X, DemoTo.Y)); return; } // WM_LBUTTONUP
+
+        if (s == 10) { Current.AnnotateForTest(Tool.Arrow, new Point(240, 190), new Point(700, 400)); return; }
+        if (s == 11) { Current.AnnotateForTest(Tool.Line, new Point(760, 200), new Point(1180, 320)); return; }
+        if (s == 12) { Current.AnnotateForTest(Tool.Box, new Point(300, 430), new Point(560, 560)); return; }
+        if (s == 13) { Current.StartTextForTest(new Point(700, 460)); return; }
+
+        string halo = "halo";
+        if (s >= 14 && s < 14 + halo.Length) { TypeChar(h, halo[s - 14]); return; }
+        if (s == 18) { TypeChar(h, '\r'); return; }   // Enter = commit teks
+        if (s == 19) { Current.CopyForTest(); return; }
+
+        _demo.Stop();
+        _demo.Dispose();
+        Environment.Exit(0);
+    }
+
     static int SelfTest()
     {
         Rectangle vs = SystemInformation.VirtualScreen;

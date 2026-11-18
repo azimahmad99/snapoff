@@ -2,6 +2,10 @@
 
 Screenshot and annotate for Windows. Drag an area, draw on it in place, `Ctrl+C`.
 
+![Snapoff: drag, annotate in the same overlay, copy](docs/demo.gif)
+
+*Recorded on a real desktop (an Edge window showing Medium's landing page). The selection is driven by posted mouse messages so the recording is reproducible: `Snapoff-e2e.exe --demo`.*
+
 **One `.cs` file. 53 KB exe. Zero network code. No installer, no registry, no telemetry.** It builds with the C# compiler Windows already ships — no .NET SDK, no NuGet, no dependencies.
 
 ```
@@ -75,6 +79,8 @@ That vendor compiler is C# 5 — no string interpolation, no `?.`, no expression
 ./Snapoff-e2e.exe --selftest    # must exit 0; prints every measured number
 ./Snapoff-e2e.exe --clipcheck   # clipboard write + read, with timings
 ./Snapoff-e2e.exe --e2e "C:\Temp\overlay.png"   # drives the real overlay on screen
+./Snapoff-e2e.exe --demo        # same overlay, but drags the selection with posted mouse
+                                # messages and annotates slowly — this is what recorded the GIF
 ./Snapoff.exe --selftest        # release build: prints one line, exits 2 (no test code inside)
 ```
 

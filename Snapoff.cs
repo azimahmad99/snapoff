@@ -1490,7 +1490,7 @@ static partial class Program
     static int Main(string[] args)
     {
         DpiMode = Native.SetDpiAwareness();
-        Quiet = args.Length > 0 && (args[0] == "--selftest" || args[0] == "--e2e" || args[0] == "--clipcheck");
+        Quiet = args.Length > 0 && (args[0] == "--selftest" || args[0] == "--e2e" || args[0] == "--clipcheck" || args[0] == "--demo");
 #if E2E
         if (args.Length > 0 && args[0] == "--selftest") return SelfTest();
         if (args.Length > 0 && args[0] == "--clipcheck") return ClipCheck();
@@ -1544,6 +1544,7 @@ static partial class Program
 
 #if E2E
         if (args.Length > 1 && args[0] == "--e2e") StartE2E(args[1]);
+        if (args.Length > 0 && args[0] == "--demo") StartDemo();
 #endif
 
         Application.Run(new ApplicationContext());
