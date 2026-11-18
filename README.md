@@ -53,6 +53,14 @@ Controls:
 | Copy + save + close | `Ctrl+C` or `Enter` |
 | Save as | `Ctrl+S` |
 
+## First run
+
+1. Extract the zip anywhere **writable** and run `Snapoff.exe`. A tray icon appears — on Windows 11 it may be hidden behind the `^` overflow arrow in the taskbar.
+2. Press `PrtSc` to capture. If that opens Windows' own Snipping Tool instead, the key belongs to the OS: disable it in Settings → Accessibility → Keyboard, or switch this app to `Ctrl+PrtSc` from tray → Settings.
+3. The result goes to the clipboard and to `Pictures\snapoff` (folder, format and JPEG quality are all adjustable in Settings).
+
+The interface is currently in **Indonesian**; this README is English. An i18n pass has not been done yet.
+
 ## Build
 
 From this folder:
