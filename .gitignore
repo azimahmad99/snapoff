@@ -13,3 +13,6 @@ Snapoff-*.zip
 # milik mesin, jangan pernah ikut
 settings.ini
 Snapoff.cmd
+
+# folder sementara tooling (Hermes membuatnya di cwd kerja)
+.hermes-tmp.*/
