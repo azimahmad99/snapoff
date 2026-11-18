@@ -2,10 +2,10 @@
 
 One page, reproducible. Every number below came from running the command shown, on Windows 11 (build 26200) with .NET Framework 4.8, 2026-11-18. If a claim cannot be reproduced on your machine, the claim is wrong — not your machine.
 
-Build audited: `Snapoff.exe`, 53,760 bytes. The hash below belongs to one specific build — compilation is not reproducible, so rebuilding the same source produces a different hash:
+Build audited: `Snapoff.exe`, 53,760 bytes. The hash below belongs to the exact binary inside `Snapoff-0.9.0.zip` on the release page — compilation is not reproducible, so rebuilding the same source produces a different hash:
 
 ```
-sha256  0fa1b3e99acb8f94250fc75458e8326a62b34e0a499f55c9c32d06400ebc5e45   (build of 2026-11-18)
+sha256  e0012c3fa962474f7fe1fd6f15b05fd82835d85881b9d082ea12a37bb6295f34   (0.9.0 release build)
 ```
 
 What must reproduce is the behaviour, not the bytes. Rebuild from source, re-run the checks below, and compare the numbers — a mismatch means the audit page is wrong, and the source is the authority.
