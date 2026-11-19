@@ -1,11 +1,11 @@
-# Audit — Snapoff 0.9.0.0
+# Audit — Snapoff 0.9.1.0
 
-One page, reproducible. Every number below came from running the command shown, on Windows 11 (build 26200) with .NET Framework 4.8, 2026-11-18. If a claim cannot be reproduced on your machine, the claim is wrong — not your machine.
+One page, reproducible. Every number below came from running the command shown, on Windows 11 (build 26200) with .NET Framework 4.8, 2026-11-19. If a claim cannot be reproduced on your machine, the claim is wrong — not your machine.
 
-Build audited: `Snapoff.exe`, 53,760 bytes. The hash below belongs to the exact binary inside `Snapoff-0.9.0.zip` on the release page — compilation is not reproducible, so rebuilding the same source produces a different hash:
+Build audited: `Snapoff.exe`, 54,272 bytes. The hash below belongs to the exact binary inside `Snapoff-0.9.1.zip` on the release page — compilation is not reproducible, so rebuilding the same source produces a different hash:
 
 ```
-sha256  3651ed4f2cb4d3214903278b48a4000f63f4dfd9dce96a115440b0881d2c0989   (0.9.0 release build)
+sha256  7570a02467eaa2b9d609e58fe08981f596abf5738cf6ced23adb0501b0ebb053   (0.9.1 release build)
 ```
 
 What must reproduce is the behaviour, not the bytes. Rebuild from source, re-run the checks below, and compare the numbers — a mismatch means the audit page is wrong, and the source is the authority.
@@ -61,7 +61,7 @@ The complete list of write paths in the source, by function:
 |---|---|
 | `Settings.Save()` | `settings.ini` next to the exe — only after you press Save in the settings dialog |
 | `ApplyAutostart()` | `Snapoff.cmd` in the user's Startup folder — only when autostart is enabled; deleted when disabled |
-| `TrySave()` / `TrySaveAuto()` | the captured PNG/JPEG/BMP in the configured output folder (default `Pictures\snapoff`, created on demand) |
+| `TrySave()` / `TrySaveAuto()` | the captured PNG/JPEG/BMP in the configured output folder (default `Pictures\Snapoff`, created on demand) |
 
 Everything else is in process memory. There is no cache directory, no temp spill, no log file, no crash reporter.
 

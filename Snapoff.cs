@@ -384,7 +384,9 @@ static class Settings
     public static bool Autostart;
     public static string Note = "";        // nilai yang diabaikan, ditampilkan sekali di balon tray
     // Dipakai uji supaya selftest tidak pernah menyentuh folder Startup pengguna.
+#pragma warning disable 0649 // hanya diisi build uji (Snapoff-test.cs); exe rilis memang tidak pernah menulisnya
     public static string StartupDirOverride;
+#pragma warning restore 0649
 
     static readonly string[] FormatSah = new string[] { "png", "jpg" };
     static readonly string[] HotkeySah = new string[] { "prtsc", "ctrl+prtsc", "none" };
@@ -392,7 +394,7 @@ static class Settings
     public static void Load(string iniPath)
     {
         IniPath = iniPath;
-        Dir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyPictures), "snapoff");
+        Dir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyPictures), "Snapoff");
         Format = "png";
         Quality = 90;
         Hotkey = "prtsc";
@@ -1200,10 +1202,8 @@ sealed class OverlayForm : Form
         Bitmap r = Compose();
         // Simpan dulu, baru clipboard: kalau clipboard sibuk, gambar sudah aman di disk.
         bool berkas = Program.TrySaveAuto(r, path);
+        // Bitmap di-Dispose/ditahan di dalam TryClipboard — satu tempat yang tahu hasil sebenarnya.
         bool klip = Program.TryClipboard(r, berkas ? path : null);
-        // Gagal salin: bitmap ditahan (bukan di-Dispose) supaya proses tidak crash saat teardown.
-        if (klip) r.Dispose();
-        else Program.TahanBitmapGagalClipboard(r);
         // Dua-duanya gagal: biarkan overlay terbuka supaya gambar tidak hilang dan Ctrl+S bisa dipakai.
         if (!berkas && !klip) return;
         Close();
@@ -1366,22 +1366,53 @@ static partial class Program
         catch (Exception ex) { Fail("Gagal menyimpan ke " + path + ": " + ex.Message + " Coba lokasi lain lewat Ctrl+S."); return false; }
     }
 
+    // Penanda privat: membedakan gambar hasil kita dari sisa salinan lama di clipboard.
+    public const string TandaFormat = "SnapoffSalinan";
+
     public static bool TryClipboard(Bitmap b, string sudahTersimpan)
     {
         // Clipboard Windows sering dikunci proses lain sesaat (terukur: 3 dari 6 run E2E gagal).
         // Overload 4 argumen sudah punya mekanisme coba-ulang bawaan; tidak perlu loop sendiri.
+        string tanda = Guid.NewGuid().ToString("N");
         try
         {
-            Clipboard.SetDataObject(b, true, 5, 120);
+            DataObject d = new DataObject();
+            d.SetData(DataFormats.Bitmap, true, b);
+            d.SetData(TandaFormat, false, tanda);
+            Clipboard.SetDataObject(d, true, 5, 120);
             LepasBitmapGagal(); // data baru sudah di clipboard: bitmap dari kegagalan lama aman dibuang
+            b.Dispose();
             return true;
         }
         catch (Exception ex)
         {
-            Fail("Gagal menyalin ke clipboard setelah 5 percobaan: " + ex.Message +
-                 (sudahTersimpan == null ? "" : " Gambar sudah tersimpan di " + sudahTersimpan));
-            return false;
+            // Kegagalan sering datang dari langkah flush SESUDAH data terpasang: yang gagal cuma
+            // menyelesaikan render, salinannya sudah bisa di-paste. Periksa keadaan nyata sebelum
+            // melapor gagal — pesan palsu lebih mahal daripada satu baris pemeriksaan.
+            bool ada = BerisiTandaKita(tanda);
+            TahanBitmapGagalClipboard(b); // DataObject kita mungkin masih memegang handle bitmap ini
+            if (!ada)
+                Fail("Gagal menyalin ke clipboard setelah 5 percobaan: " + ex.Message +
+                     (sudahTersimpan == null ? "" : " Gambar sudah tersimpan di " + sudahTersimpan));
+            return ada;
         }
+    }
+
+    static bool BerisiTandaKita(string tanda)
+    {
+        // Kalau TULIS gagal karena clipboard dikunci, BACA juga bisa gagal sesaat. Ulangi baca
+        // (bukan menyimpulkan "tidak ada" dari satu percobaan), lalu putuskan dari keadaan nyata.
+        for (int i = 0; i < 4; i++)
+        {
+            try
+            {
+                IDataObject o = Clipboard.GetDataObject();
+                return o != null && o.GetDataPresent(TandaFormat) &&
+                       Convert.ToString(o.GetData(TandaFormat)) == tanda;
+            }
+            catch { System.Threading.Thread.Sleep(150); }
+        }
+        return false;
     }
 
     // Bitmap yang penulisannya ke clipboard GAGAL tidak boleh langsung di-Dispose: DataObject

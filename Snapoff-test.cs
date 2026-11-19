@@ -450,7 +450,9 @@ static partial class Program
         if (File.Exists(iniPath)) File.Delete(iniPath);
         Settings.Load(iniPath);
         bool bawaanMurni = Settings.Format == "png" && Settings.Quality == 90 && Settings.Hotkey == "prtsc"
-                           && !Settings.Autostart && Settings.Note.Length == 0;
+                           && !Settings.Autostart && Settings.Note.Length == 0
+                           && Settings.Dir.EndsWith("Snapoff"); // huruf besar S: `snapoff` KECIL harus gagal di sini
+        Console.WriteLine("folder bawaan: " + Settings.Dir);
         Settings.Dir = Path.Combine(Path.GetTempPath(), "snapoff-hasil");
         Settings.Format = "jpg";
         Settings.Quality = 77;

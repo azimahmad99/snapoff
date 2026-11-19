@@ -6,12 +6,12 @@ Screenshot and annotate for Windows. Drag an area, draw on it in place, `Ctrl+C`
 
 *Recorded on a real desktop (an Edge window showing Medium's landing page). The selection is driven by posted mouse messages so the recording is reproducible: `Snapoff-e2e.exe --demo`.*
 
-**One `.cs` file. 53 KB exe. Zero network code. No installer, no registry, no telemetry.** It builds with the C# compiler Windows already ships — no .NET SDK, no NuGet, no dependencies.
+**One `.cs` file. 54 KB exe. Zero network code. No installer, no registry, no telemetry.** It builds with the C# compiler Windows already ships — no .NET SDK, no NuGet, no dependencies.
 
 ```
-Snapoff.exe        53,760 bytes   (one file, the whole application)
-Snapoff.cs          1,587 lines   (UI + capture + annotation + settings)
-Snapoff-test.cs       717 lines   (test-only build: --selftest, --e2e, --clipcheck)
+Snapoff.exe        54,272 bytes   (one file, the whole application)
+Snapoff.cs          1,629 lines   (UI + capture + annotation + settings)
+Snapoff-test.cs       800 lines   (test-only build: --selftest, --e2e, --clipcheck)
 network imports           0       (no ws2_32 / wininet / winhttp / urlmon / dnsapi / mswsock)
 registry writes           0
 requirements              .NET Framework 4.x, already present on Windows 7/10/11
@@ -57,7 +57,7 @@ Controls:
 
 1. Extract the zip anywhere **writable** and run `Snapoff.exe`. A tray icon appears — on Windows 11 it may be hidden behind the `^` overflow arrow in the taskbar.
 2. Press `PrtSc` to capture. If that opens Windows' own Snipping Tool instead, the key belongs to the OS: disable it in Settings → Accessibility → Keyboard, or switch this app to `Ctrl+PrtSc` from tray → Settings.
-3. The result goes to the clipboard and to `Pictures\snapoff` (folder, format and JPEG quality are all adjustable in Settings).
+3. The result goes to the clipboard and to `Pictures\Snapoff` (folder, format and JPEG quality are all adjustable in Settings).
 
 The interface is currently in **Indonesian**; this README is English. An i18n pass has not been done yet.
 
@@ -103,7 +103,7 @@ That vendor compiler is C# 5 — no string interpolation, no `?.`, no expression
 - It is unsigned. SmartScreen may warn on the first run of a downloaded binary; building from source avoids that entirely.
 - There is no installer and no uninstaller. Extraction folder must be **writable** (Desktop, Documents, a USB stick) — inside `Program Files`, `settings.ini` cannot be written and preferences will not persist.
 - The "desktop locked" capture path is readable code and a visible message, not an automated test.
-- Version 0.9.0.0 — pre-1.0 on purpose: the gates below are not all passed yet.
+- Version 0.9.1.0 — pre-1.0 on purpose: the gates below are not all passed yet.
 
 ## License
 
@@ -114,7 +114,7 @@ MIT — see [LICENSE](LICENSE).
 There is no uninstaller because there is nothing installed. Delete the folder you extracted, then, if you used these:
 - the settings file: `settings.ini` next to `Snapoff.exe`
 - autostart: `Snapoff.cmd` in `%APPDATA%\Microsoft\Windows\Start Menu\Programs\Startup`
-- captures: the output folder shown in Settings (default `Pictures\snapoff`)
+- captures: the output folder shown in Settings (default `Pictures\Snapoff`)
 
 Nothing else is left behind: no registry keys, no services, no cache directory.
 

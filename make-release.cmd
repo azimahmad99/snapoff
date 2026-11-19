@@ -1,7 +1,7 @@
 @echo off
 rem Rilis: build, hash, zip. Jalankan dari folder ini. Hasil: Snapoff-<versi>.zip
 setlocal
-set VER=0.9.0
+set VER=0.9.1
 set ZIP=Snapoff-%VER%.zip
 
 call build.cmd || exit /b 1
